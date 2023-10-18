@@ -1,7 +1,7 @@
 module github.com/terraform-providers/terraform-provider-panos
 
 require (
-	github.com/PaloAltoNetworks/pango v0.10.2
+	github.com/PaloAltoNetworks/pango v0.10.3
 	github.com/hashicorp/terraform-plugin-sdk v1.17.2
 	golang.org/x/crypto v0.13.0
 )
@@ -87,5 +87,6 @@ require (
 )
 
 //replace github.com/PaloAltoNetworks/pango => ../pango
+replace github.com/PaloAltoNetworks/pango => github.com/gtn3010/pango v0.10.3-0.20231027080237-7d749fb33105
 
 go 1.17
