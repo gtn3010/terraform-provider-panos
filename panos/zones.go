@@ -480,6 +480,16 @@ func zoneSchema(isResource bool, rmKeys []string) map[string]*schema.Schema {
 			Description: "Boolean to enable user identification.",
 			Optional:    true,
 		},
+		"enable_packet_buffer_protection": {
+			Type:        schema.TypeBool,
+			Description: "Boolean to enable packet buffer protection.",
+			Optional:    true,
+		},
+		"enable_l34_header_inspection": {
+			Type:        schema.TypeBool,
+			Description: "Boolean to enable L3-4 Header inspection.",
+			Optional:    true,
+		},
 		"interfaces": {
 			Type:        schema.TypeList,
 			Description: "List of interfaces associated with this zone.  Leave this undefined if you want to use `panos_zone_entry` resources.",
@@ -560,14 +570,16 @@ func zoneEntrySchema(withTmpl, withTs bool) map[string]*schema.Schema {
 
 func loadZone(d *schema.ResourceData) zone.Entry {
 	return zone.Entry{
-		Name:         d.Get("name").(string),
-		Mode:         d.Get("mode").(string),
-		ZoneProfile:  d.Get("zone_profile").(string),
-		LogSetting:   d.Get("log_setting").(string),
-		EnableUserId: d.Get("enable_user_id").(bool),
-		Interfaces:   asStringList(d.Get("interfaces").([]interface{})),
-		IncludeAcls:  asStringList(d.Get("include_acls").([]interface{})),
-		ExcludeAcls:  asStringList(d.Get("exclude_acls").([]interface{})),
+		Name:                         d.Get("name").(string),
+		Mode:                         d.Get("mode").(string),
+		ZoneProfile:                  d.Get("zone_profile").(string),
+		LogSetting:                   d.Get("log_setting").(string),
+		EnableUserId:                 d.Get("enable_user_id").(bool),
+		EnablePacketBufferProtection: d.Get("enable_packet_buffer_protection").(bool),
+		EnableL3L4HeaderInspection:   d.Get("enable_l34_header_inspection").(bool),
+		Interfaces:                   asStringList(d.Get("interfaces").([]interface{})),
+		IncludeAcls:                  asStringList(d.Get("include_acls").([]interface{})),
+		ExcludeAcls:                  asStringList(d.Get("exclude_acls").([]interface{})),
 	}
 }
 
@@ -577,6 +589,9 @@ func saveZone(d *schema.ResourceData, o zone.Entry) {
 	d.Set("zone_profile", o.ZoneProfile)
 	d.Set("log_setting", o.LogSetting)
 	d.Set("enable_user_id", o.EnableUserId)
+	d.Set("enable_packet_buffer_protection", o.EnablePacketBufferProtection)
+	d.Set("enable_l34_header_inspection", o.EnableL3L4HeaderInspection)
+
 	if err := d.Set("interfaces", o.Interfaces); err != nil {
 		log.Printf("[WARN] Error setting 'interfaces' param for %q: %s", d.Id(), err)
 	}
