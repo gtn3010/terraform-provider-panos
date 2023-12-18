@@ -4,7 +4,6 @@ import (
 	"archive/zip"
 	"fmt"
 	"io/fs"
-	"log"
 	"os"
 )
 
@@ -13,17 +12,16 @@ const (
 )
 
 func main() {
-
 	fileName := os.Args[1]
 	zipName := os.Args[2]
 
 	srcFile, err := os.ReadFile(fileName)
 	if err != nil {
-		log.Fatal(err)
+		fmt.Printf("Failed to read file %s with error: %s", fileName, err)
 	}
 	zipFile, err := os.Create(zipName)
 	if err != nil {
-		log.Fatal(err)
+		fmt.Printf("Failed to create dest zip file with error: %s", err)
 	}
 	defer zipFile.Close()
 
@@ -41,10 +39,10 @@ func main() {
 
 	dstZip, err := w.CreateHeader(fh)
 	if err != nil {
-		log.Fatal(err)
+		fmt.Printf("Failed to create header file when zipping with error: %s", err)
 	}
 	_, err = dstZip.Write(srcFile)
 	if err != nil {
-		log.Fatal(err)
+		fmt.Printf("Failed to write to zip file for compressing: %s", err)
 	}
 }
